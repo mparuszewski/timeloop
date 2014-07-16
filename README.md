@@ -1,4 +1,4 @@
-# Timeloop [![Code Climate](https://codeclimate.com/github/pinoss/timeloop.png)](https://codeclimate.com/github/pinoss/timeloop) [![Build Status](https://travis-ci.org/pinoss/timeloop.svg?branch=master)](https://travis-ci.org/pinoss/timeloop) [![Coverage Status](https://coveralls.io/repos/pinoss/timeloop/badge.png)](https://coveralls.io/r/pinoss/timeloop) [![Gem Version](https://badge.fury.io/rb/timeloop.svg)](http://badge.fury.io/rb/timeloop)
+# Timeloop [![Code Climate](https://codeclimate.com/github/pinoss/timeloop.png)](https://codeclimate.com/github/pinoss/timeloop) [![Build Status](https://travis-ci.org/pinoss/timeloop.svg?branch=master)](https://travis-ci.org/pinoss/timeloop) [![Coverage Status](https://coveralls.io/repos/pinoss/timeloop/badge.png?branch=master)](https://coveralls.io/r/pinoss/timeloop?branch=master) [![Gem Version](https://badge.fury.io/rb/timeloop.svg)](http://badge.fury.io/rb/timeloop)
 
 Timeloop is a simple Ruby gem that provides loop with time interval inspired on 'every' method from whenever gem. 
 
