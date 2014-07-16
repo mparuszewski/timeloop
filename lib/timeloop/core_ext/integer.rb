@@ -1,0 +1,1 @@
+require 'timeloop/core_ext/integer/time'
