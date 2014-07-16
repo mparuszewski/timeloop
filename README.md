@@ -1,4 +1,4 @@
-# Timeloop
+# Timeloop [![Code Climate](https://codeclimate.com/github/pinoss/timeloop.png)](https://codeclimate.com/github/pinoss/timeloop) [![Build Status](https://travis-ci.org/pinoss/timeloop.svg?branch=master)](https://travis-ci.org/pinoss/timeloop) [![Coverage Status](https://coveralls.io/repos/pinoss/timeloop/badge.png)](https://coveralls.io/r/pinoss/timeloop) [![Gem Version](https://badge.fury.io/rb/timeloop.svg)](http://badge.fury.io/rb/timeloop)
 
 Timeloop is a simple Ruby gem that provides loop with time interval inspired on 'every' method from whenever gem. 
 
@@ -59,7 +59,7 @@ end
 You can also specify how many times your block will be evaluated:
 
 ```ruby
-every 10.seconds, maxium: 4.times do |i|
+every 10.seconds, maximum: 4.times do |i|
  puts i
 end
 
@@ -71,7 +71,7 @@ end
 # 3
 # => 4
 
-every 'second', maxium: 3 do |i|
+every 'second', maximum: 3 do |i|
  puts 'You will see me only 3 times.'
 end
 
