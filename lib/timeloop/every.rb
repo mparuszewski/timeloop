@@ -1,3 +1,5 @@
+require 'timeloop/core_ext'
+
 module Timeloop
   module Every
 
