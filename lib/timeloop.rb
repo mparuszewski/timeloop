@@ -2,27 +2,32 @@ require 'timeloop/core_ext'
 require 'timeloop/version'
 
 module Kernel
-  def every(value, opts = {})
-    maximum = parse_maximum_value(opts.fetch(:maximum)) if opts.key? :maximum
-    frequency = parse_frequency(value)
+  # Provides a way to execute a block of code periodically. The
+  # runtime of the block is taken in to account so a delay in one run
+  # does not impact the start times of future runs.
+  #
+  # Yields Integer index of the iteration to the provide block every `period`.
+  def every(period, opts = {})
+    maximum = parse_maximum_value(opts.fetch(:maximum, Float::INFINITY))
+    frequency = parse_frequency(period)
 
-    if maximum.nil?
-      i = 0
-      loop do
-        yield(i) if block_given?
-        sleep frequency
-        
-        i += 1
-      end
-    else
-      maximum.times do |i|
-        yield(i) if block_given?
-        sleep frequency
-      end
+    i = -1
+    loop do
+      run_started_at = Time.now
+      i += 1
+
+      yield(i) if block_given?
+
+      break if i+1 >= maximum
+      sleep time_til_next_run(frequency, Time.now - run_started_at)
     end
   end
 
   private
+
+  def time_til_next_run(frequency, current_run_duration)
+    [0, frequency - current_run_duration].max
+  end
 
   def parse_frequency(frequency)
     case frequency
@@ -49,7 +54,7 @@ module Kernel
     case maximum
     when Enumerator
       maximum.count
-    when Integer
+    when Integer, Float::INFINITY
       maximum
     else
       fail ArgumentError.new('wrong type of argument (should be an Enumerator or Integer)')
