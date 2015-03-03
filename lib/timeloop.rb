@@ -1,11 +1,10 @@
 require 'timeloop/core_ext'
 require 'timeloop/version'
 
-# Provides a way to execute a block of code periodically. The
-# runtime of the block is taken in to account so a delay in one run
-# does not impact the start times of future runs.
+# Execute a block of code periodically. The runtime of the block is
+# taken in to account so a delay in one run does not impact the start
+# times of future runs.
 class Timeloop
-
   # Runs provided block periodically.
   #
   # Yields Integer index of the iteration to the provide block every `period`.
@@ -24,6 +23,7 @@ class Timeloop
     end
   end
 
+  # Returns string representation of self,
   def to_s
     ["#<Timeloop period=#{period}",
      max < Float::INFINITY ? ", max=#{max}" : "",
@@ -34,6 +34,16 @@ class Timeloop
 
   attr_reader :period, :max, :logger
 
+  # Initialize a new Timeloop object.
+  #
+  # Options
+  #   period  - seconds or name of time period (eg, 'second', 'hour')
+  #             between iterations
+  #   max     - the maximum number of executions of the block. Default:
+  #             INFINITY
+  #   maximum - synonym of `max`
+  #   logger  - logger to which debugging info should be sent. Default:
+  #             no logging
   def initialize(opts)
     @period = parse_frequency(opts.fetch(:period))
     @max    = parse_maximum_value(opts.fetch(:maximum){opts.fetch(:max, Float::INFINITY)})
@@ -61,7 +71,7 @@ class Timeloop
       frequency
     when :second, 'second'
       1.second
-    when :minute, 'second'
+    when :minute, 'minute'
       1.minute
     when :hour, 'hour'
       1.hour
@@ -80,23 +90,30 @@ class Timeloop
   NULL_LOGGER = Class.new do
     def debug(*args); end
   end.new
-end
 
-module Kernel
-  # Provides a way to execute a block of code periodically. The
-  # runtime of the block is taken in to account so a delay in one run
-  # does not impact the start times of future runs.
-  #
-  # Yields Integer index of the iteration to the provide block every `period`.
-  def every(period, opts = {}, &blk)
-    Timeloop.new(opts.merge(period: period)).loop(&blk)
+  # Conveniences methods that provide access to the Timeloop
+  # functionality to be included in other classes and modules.
+  module Helper
+    # Provides a way to execute a block of code periodically. The
+    # runtime of the block is taken in to account so a delay in one run
+    # does not impact the start times of future runs.
+    #
+    # Arguments
+    #   period - seconds or name of time period (eg,
+    #            'second', 'hour') between iterations
+    #
+    # Options
+    #   max     - the maximum number of executions of the block. Default:
+    #             INFINITY
+    #   maximum - synonym of `max`
+    #   logger  - logger to which debugging info should be sent. Default:
+    #             no logging
+    #
+    # Yields Integer index of the iteration to the provide block every `period`.
+    def every(period, opts = {}, &blk)
+      Timeloop.new(opts.merge(period: period)).loop(&blk)
+    end
   end
 
-  private
-
-
-end
-
-class Object
-  include Kernel
+  extend Helper
 end

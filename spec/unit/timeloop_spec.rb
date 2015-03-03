@@ -1,13 +1,6 @@
 require 'spec_helper'
 require 'logger'
 
-describe "Kernel#every" do
-  it "calls block every period" do
-    expect{|b| every((0.0001).second, maximum: 3, &b)}.to yield_control.exactly(3).times
-  end
-end
-
-
 describe Timeloop do
   describe ".new" do
     it "accepts all the options" do
@@ -28,6 +21,36 @@ describe Timeloop do
     it "rejects bogus periods" do
       expect{described_class.new(period: :circle)}
         .to raise_error ArgumentError
+    end
+  end
+
+  describe ".every(period, max: 3)" do
+    it "invokes block on the specified period" do
+      start_times = []
+      Timeloop.every(0.1, max: 3) { start_times << Time.now }
+
+      expect(start_times[1] - start_times[0]).to be_within(0.01).of(0.1)
+      expect(start_times[2] - start_times[1]).to be_within(0.01).of(0.1)
+    end
+  end
+
+  describe ".every(period, maximum: 3)" do
+    it "invokes block on the specified period" do
+      start_times = []
+      Timeloop.every(0.1, maximum: 3) { start_times << Time.now }
+
+      expect(start_times[1] - start_times[0]).to be_within(0.01).of(0.1)
+      expect(start_times[2] - start_times[1]).to be_within(0.01).of(0.1)
+    end
+  end
+
+  describe ".every(period)" do
+    it "loops forever" do
+      expect {
+        Timeout.timeout(1) do
+          expect{|b| Timeloop.every(0.1, &b)}.to yield_control.exactly(10).times
+        end
+      }.to raise_error(Timeout::Error)
     end
   end
 
@@ -97,7 +120,7 @@ describe Timeloop do
           subject.loop {  }
         end
       }.to raise_error(Timeout::Error)
-  end
+    end
   end
 
   # Background
